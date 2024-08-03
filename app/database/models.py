@@ -9,7 +9,8 @@ class Users(Model):
     
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    fullname = Column(String)
+    username = Column(String)
     apis = relationship("Api", back_populates="user")
 
 class Api(Model):
@@ -17,6 +18,16 @@ class Api(Model):
     
 
     id = Column(Integer, primary_key=True)
+    name = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))
-    api = Column(String)
+    api_key = Column(String)
     user = relationship("Users", back_populates="apis")
+
+
+class Items(Model):
+    __tablename__ = "items"
+    
+    id = Column(Integer, primary_key=True)
+    art = Column(String)
+    quantity = Column(Integer)
+    days = Column(Integer)
