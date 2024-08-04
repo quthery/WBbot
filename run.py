@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher
 from app.handlers.handlers import router
 from app.handlers.fsm import fsmRouter
 from app.database.init import create_tables
+from app.wildberries.marketplace import fetch_new_orders
 
 
 

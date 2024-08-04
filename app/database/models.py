@@ -11,6 +11,7 @@ class Users(Model):
     id = Column(Integer, primary_key=True)
     fullname = Column(String)
     username = Column(String)
+    password = Column(String)
     apis = relationship("Api", back_populates="user")
 
 class Api(Model):
