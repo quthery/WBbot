@@ -51,6 +51,17 @@ class Repository:
                 return str(user.password)
         except AttributeError:
             return 0
+        
+    @classmethod
+    async def get_api_key(cls, user_id: int = None, name: str = None) -> list[str]:
+        async with new_session() as session:
+            query = select(Api.api_key)
+            query = query.where(Api.user_id == user_id, Api.name == name)
+
+            result = await session.execute(query)
+            api_keys = result.scalars().all()
+            api_key_strings = [str(key) for key in api_keys]
+            return api_key_strings
             
 
 

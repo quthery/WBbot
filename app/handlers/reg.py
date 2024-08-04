@@ -1,11 +1,11 @@
-from app.keyboards.ReplyKeyboard import main_buttons, cancel_buttons
-
+from app.keyboards.ReplyKeyboard import main_buttons
 from app.database.repository import Repository as rep
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
+from app.keyboards.InlineKeyboard import cancel_buttons
 
 
 class Reg_api(StatesGroup):
@@ -62,7 +62,7 @@ async def reg_api_step1(message: Message, state: FSMContext):
 async def reg_api_step2(message: Message, state: FSMContext):
     await state.update_data(api=message.text)
     await state.set_state(Reg_api.api_name)
-    await message.answer("Введите название под которым хотите видеть свой API в боте")
+    await message.answer("Введите название под которым хотите видеть свой API в боте", reply_markup=cancel_buttons)
 
 
 
@@ -72,7 +72,7 @@ async def reg_api_step2(message: Message, state: FSMContext):
 @fsmRouter.message(Reg_api.api_name)
 async def reg_api_step3(message: Message, state: FSMContext):
     await state.update_data(api_name="m_"+message.text)
-    await message.answer("Введите пароль чтобы подтвердить")
+    await message.answer("Введите пароль чтобы подтвердить", reply_markup=cancel_buttons)
     await state.set_state(Reg_api.passsword)
 
 
@@ -94,11 +94,7 @@ async def reg_api_verify_pass(message: Message, state: FSMContext):
 
     
 
-@fsmRouter.callback_query(F.data == "cancel")
-async def cancel(call: CallbackQuery):
-    await call.answer()
-    api_names = await rep.get_api_names(call.message.from_user.id)
-    await call.message.answer("вы вернулись в главное меню", reply_markup=await main_buttons(list(api_names)))
+
 
 
     

@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardButton,InlineKeyboardMarkup, KeyboardButton
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
@@ -7,11 +7,14 @@ main = [
   KeyboardButton(text='FAQ📖')
 ]
 
-inline_keyboard = [
-    [InlineKeyboardButton(text="Назад", callback_data="cancel")]
-]
 
-cancel_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+articles_manage_buttons = ReplyKeyboardMarkup(
+	keyboard=[
+		[KeyboardButton(text="Добавить артикул➕")],
+		[KeyboardButton(text="Убрать артикул➖")],
+		[KeyboardButton(text="Статистика📈")]
+	]
+)
 
 async def main_buttons(api_names: list[str]):
 	keyboard = ReplyKeyboardBuilder()
