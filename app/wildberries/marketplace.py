@@ -7,7 +7,6 @@ token = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwODAxdjEiLCJ0eXAiOiJKV1QifQ.eyJlbnQi
 
 
 async def fetch_sales(api_key):
-    # Устанавливаем дату начала (30 дней назад)
     date_from = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%dT%H:%M:%S%z')
     
     url = "https://statistics-api.wildberries.ru/api/v1/supplier/sales"
@@ -16,7 +15,7 @@ async def fetch_sales(api_key):
     }
     params = {
         "dateFrom": date_from,
-        "flag": 0  # Получаем данные с последними изменениями
+        "flag": 0
     }
 
     async with aiohttp.ClientSession() as session:
@@ -27,4 +26,19 @@ async def fetch_sales(api_key):
                 return data
             else:
                 return {"error": f"Ошибка {response.status}: {await response.text()}"}
+
+async def check_api_key(token) -> int:
+    headers = {
+        "Authorization": token
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url="https://supplies-api.wildberries.ru/api/v1/acceptance/coefficients", headers=headers) as response:
+            if response.status == 200:
+                print("API кей действителен")
+                return 200
+            else:
+                print(await response.json())
+                return 401
+
+
 

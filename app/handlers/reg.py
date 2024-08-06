@@ -6,6 +6,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
 from app.keyboards.InlineKeyboard import cancel_buttons
+from app.wildberries.marketplace import check_api_key
 
 
 class Reg_api(StatesGroup):
@@ -29,6 +30,7 @@ async def start_message(message: Message, state: FSMContext):
         await message.answer(
             f'🌟Привет, {message.from_user.full_name}!🌟 Ты попал в систему WBchecker! 🚀 Для навигации используй кнопки ниже',
             reply_markup=await main_buttons(list(api_names))
+            
         )
     else:
         await message.answer(
@@ -60,13 +62,14 @@ async def reg_api_step1(message: Message, state: FSMContext):
 
 @fsmRouter.message(Reg_api.api)
 async def reg_api_step2(message: Message, state: FSMContext):
-    await state.update_data(api=message.text)
-    await state.set_state(Reg_api.api_name)
-    await message.answer("Введите название под которым хотите видеть свой API в боте", reply_markup=cancel_buttons)
-
-
-
-
+    code = await check_api_key(message.text)
+    if code == 200:
+        await state.update_data(api=message.text)
+        await state.set_state(Reg_api.api_name)
+        await message.answer("Введите название под которым хотите видеть свой API в боте", reply_markup=cancel_buttons)
+    else:
+        await message.answer("Вы ввели некоректный API ключ(code: 401)")
+        await state.set_state(Reg_api.api)
 
 
 @fsmRouter.message(Reg_api.api_name)
@@ -83,7 +86,7 @@ async def reg_api_verify_pass(message: Message, state: FSMContext):
     data = await state.get_data()
     if data['password'] != password:
         await message.answer("Вы ввели неверный пароль!")
-        await state.clear()
+        await state.set_state(Reg_api.passsword)
     else:
         print(f"User ID: {message.from_user.id}, API: {data['api']}, API Name: {data['api_name']}")
         await rep.add_api(user_id=message.from_user.id, api_key=data['api'], api_name=data['api_name'])

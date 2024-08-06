@@ -25,10 +25,15 @@ class Api(Model):
     user = relationship("Users", back_populates="apis")
 
 
-class Items(Model):
-    __tablename__ = "items"
-    
+class Article(Model):
+    __tablename__ = "articles"
     id = Column(Integer, primary_key=True)
+    api_key = Column(String, ForeignKey("apis.api_key"))
     art = Column(String)
     quantity = Column(Integer)
     days = Column(Integer)
+
+
+class OrderUID(Model):
+    __tablename__ = "orderuids"
+    uid = Column(String, primary_key=True)

@@ -4,7 +4,9 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 main = [
   KeyboardButton(text='Добавить API wildberries🔌'),
-  KeyboardButton(text='FAQ📖')
+  KeyboardButton(text='FAQ📖'),
+	KeyboardButton(text='Начать ожидание заказов⌚')
+
 ]
 
 
