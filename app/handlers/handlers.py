@@ -32,10 +32,14 @@ async def wait_for_order(message: Message):
                         articles = await rep.get_articles(token)
                         for order in orders:
                             article = order.get("article")
+                            uid = order.get('orderUid')
+                            uids = await rep.get_uids(uid)
                             print(article)
-                            if article in articles:
+                            print(uids)
+                            if article in articles and uid not in uids:
                                 await message.answer(f"НА АРТИКУЛ {article} ПРИШЕЛ ЗАКАЗ СОБЕРИТЕ ЕГО И УБЕРИТЕ 1 ПОЗИЦИЮ С ОСТАТКА")
-            await asyncio.sleep(100)#это задержка 100 секунд
+                                await rep.add_uid(uid, article)
+            await asyncio.sleep(5)#раз в 5 сек приходят запросы и проверяют как видишь еще раз один и тот же не отправляеться так как ордер айди у всех уникальный и он постоянно проверяеться еще функция то что можно несклько апи добавлять и все ок будет 
 
 
 

@@ -15,7 +15,8 @@ articles_manage_buttons = ReplyKeyboardMarkup(
 		[KeyboardButton(text="Добавить артикул➕")],
 		[KeyboardButton(text="Убрать артикул➖")],
 		[KeyboardButton(text="Статистика📈")]
-	]
+	],
+	resize_keyboard=True
 )
 
 async def main_buttons(api_names: list[str]):
@@ -24,6 +25,6 @@ async def main_buttons(api_names: list[str]):
 		keyboard.add(KeyboardButton(text=api_name, callback_data="m_"+api_name, callable="m_"+api_name))
 	for main_button in main:
 		keyboard.add(main_button)
-	return keyboard.adjust(2).as_markup(resize_keyboard=True)
+	return keyboard.adjust(1).as_markup(resize_keyboard=True)
 	
 	

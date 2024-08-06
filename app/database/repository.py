@@ -1,4 +1,4 @@
-from app.database.models import Users, Api, Article
+from app.database.models import Users, Api, Article, OrderUID
 from app.database.init import new_session
 from sqlalchemy.future import select
 from sqlalchemy import update
@@ -86,7 +86,7 @@ class Repository:
                 await cls.add_article(token, art, count)
             else:
                 current_quantity = for_check_result.quantity  # Fetch current quantity
-                new_quantity = current_quantity + count  # Calculate new quantity
+                new_quantity = int(current_quantity) + int(count)  # Calculate new quantity
                 
                 query = update(Article).where(Article.art == art).values(quantity=new_quantity)
                 await session.execute(query)  # Execute the update query
@@ -157,5 +157,24 @@ class Repository:
             api_key_strings = [str(key) for key in api_keys]
             return api_key_strings
             
+    @classmethod
+    async def add_uid(cls, uid: str, article: str) -> None:
+        async with new_session() as session:
+            uid = OrderUID(uid=uid, article=article)
+            session.add(uid)
+            await session.flush()
+            await session.commit()
+
+    @classmethod
+    async def get_uids(cls, uid: str = None) -> list[str]:
+        async with new_session() as session:
+            query = select(OrderUID.uid)
+            query = query.where(OrderUID.uid == uid)
+
+            result = await session.execute(query)
+            api_keys = result.scalars().all()
+            api_key_strings = [str(key) for key in api_keys]
+            return api_key_strings
+
 
 

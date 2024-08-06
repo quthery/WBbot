@@ -36,4 +36,6 @@ class Article(Model):
 
 class OrderUID(Model):
     __tablename__ = "orderuids"
-    uid = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    uid = Column(String)
+    article = Column(String)
